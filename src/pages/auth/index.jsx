@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container';
 
 import StoreContext from '../../components/store/context';
 import { useHistory } from 'react-router-dom';
+import api from '../../utils/api';
 
 function Copyright() {
   return (
@@ -54,8 +55,16 @@ function initialState() {
     return { user: "", password: "" }
 }
 
-function login({ user, password }) {
+async function login({ user, password }) {
   // TO DO call to api
+
+  const response = await api.post('/api/v1/auth', {
+    "identity": user,
+    "password": password
+  })
+
+  console.log(response)
+  
   if (user === "admin" && password === "admin") {
     return { token: "1234" }
   }
@@ -69,9 +78,7 @@ export default function SignIn() {
   const { setToken } = useContext(StoreContext)
 
   function onChange(event) {
-      const { value, name } = event.target;
-      console.log(value)
-      console.log(name)
+      const { value, name } = event.target;      
       setValues({
           ...values,
           [name]: value,

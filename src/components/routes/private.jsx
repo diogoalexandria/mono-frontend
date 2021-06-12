@@ -1,8 +1,11 @@
 import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import StoreContext from '../store/context'
+import StoreContext from '../store/context';
 
-func
+
+// function validateToken(token) {
+
+// }
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     const { token } = useContext(StoreContext)
