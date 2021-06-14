@@ -57,25 +57,24 @@ function initialState() {
 
 async function login({ user, password }) {
   // TO DO call to api
+  try{
+    const response = await api.post('/api/v1/auth', {
+      "identity": user,
+      "password": password
+    })    
+    return response.data
 
-  const response = await api.post('/api/v1/auth', {
-    "identity": user,
-    "password": password
-  })
-
-  console.log(response)
-  
-  if (user === "admin" && password === "admin") {
-    return { token: "1234" }
-  }
-  return { error: 'Usuario ou senha invalido' }
+  } catch(err) {
+    console.log(err)
+  }  
 }
 
 export default function SignIn() {
   const classes = useStyles();
   const history =  useHistory();
   const [ values, setValues ] = useState(initialState)
-  const { setToken } = useContext(StoreContext)
+  const { setToken, setEntity } = useContext(StoreContext)
+  
 
   function onChange(event) {
       const { value, name } = event.target;      
@@ -85,15 +84,21 @@ export default function SignIn() {
       })
   }
 
-  function onSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
-
-    const { token } = login(values);
-
-    if (token) {
+    
+    const { token, entity } = await login(values); 
+    
+    if (token) {      
       setToken(token)
-      return history.push('/admin')
-    }
+      setEntity(entity)
+      if (entity === "administrator")
+        return history.push('/admin')
+      if (entity === "professor")
+        return history.push('/professor')
+      if (entity === "student")
+        return history.push('/student')
+    } 
 
     setValues(initialState)
   }
