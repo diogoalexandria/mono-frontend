@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import StoreContext from '../../components/store/context';
+import AuthContext from '../../components/store/auth/context';
 import { useHistory } from 'react-router-dom';
 import api from '../../utils/api';
 
@@ -73,7 +73,7 @@ export default function SignIn() {
   const classes = useStyles();
   const history =  useHistory();
   const [ values, setValues ] = useState(initialState)
-  const { setToken, setEntity } = useContext(StoreContext)
+  const { setToken, setEntity } = useContext(AuthContext)
   
 
   function onChange(event) {

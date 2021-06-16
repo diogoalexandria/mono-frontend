@@ -1,10 +1,10 @@
 import React from "react";
 import Context from "./context";
-import useStorage from "../../utils/useStorage"
+import useStorage from "../../../utils/useStorage"
 
-const StoreProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
     const [token, setToken] = useStorage('token')
-    const [entity, setEntity] = useStorage('entity')
+    const [entity, setEntity] = useStorage('entity')    
 
     return(
        <Context.Provider
@@ -13,7 +13,7 @@ const StoreProvider = ({ children }) => {
                 token,
                 setToken,
                 entity,
-                setEntity
+                setEntity    
             }
         }
        >
@@ -22,4 +22,4 @@ const StoreProvider = ({ children }) => {
     );
 }
 
-export default StoreProvider;
+export default AuthProvider;
