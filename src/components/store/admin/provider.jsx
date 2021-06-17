@@ -37,6 +37,13 @@ function AdminProvider({children}) {
                 singular: 'Inscrição'
             },
             path: '/admin/subscriptions'
+        },
+        {
+            text: {
+                plural: 'Aulas',
+                singular: 'Aulas'
+            },
+            path: '/admin/topics'
         }
     ])
 

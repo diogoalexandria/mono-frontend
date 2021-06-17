@@ -1,28 +1,15 @@
-import { Container } from '@material-ui/core';
 import React from 'react';
-import Header from '../../../components/header';
-import { makeStyles } from '@material-ui/core/styles';
-import { useAdminContext } from '../../../components/store/admin/context';
-
-const useStyles = makeStyles((theme) => ({
-    container: {
-      marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    }    
-  }));
-
+import ListEntity from '../../../components/list';
 
 export default function Subscriptions() {
-    const classes = useStyles();
-    const { entities } = useAdminContext()
-
-    return(
+    return(        
         <React.Fragment>            
-            <Header entities={ entities } >
-                <Container className={ classes.container }> Subscriptions Page </Container> 
-            </Header>
+            <ListEntity
+                entity={"Inscrições"}
+                columns={['ID', 'Materia', 'Aluno', 'Período', 'Status']}
+                create_path={"/admin/subscription/create"}
+                update_path={"/admin/subscription/update"}
+            />            
         </React.Fragment>
     )
 }

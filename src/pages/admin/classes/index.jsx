@@ -1,28 +1,10 @@
-import { Container } from '@material-ui/core';
 import React from 'react';
-import Header from '../../../components/header';
-import { makeStyles } from '@material-ui/core/styles';
-import { useAdminContext } from '../../../components/store/admin/context';
-
-const useStyles = makeStyles((theme) => ({
-    container: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      } 
-}));
-
+import ListEntity from '../../../components/list';
 
 export default function Classes() {
-    const classes = useStyles();
-    const { entities } = useAdminContext()
-
     return(
         <React.Fragment>            
-                <Header entities={entities} >
-                    <Container className={classes.container}>Classes Page</Container> 
-                </Header>                        
+           <ListEntity entity={"Turma"} columns={['ID', 'Matéria', 'Professor', 'Status']}></ListEntity>                       
         </React.Fragment>
     )
 }
