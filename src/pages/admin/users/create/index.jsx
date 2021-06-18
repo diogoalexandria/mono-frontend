@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import UserInfo from './UserInformation';
 import UserPhoto from './UserPhoto';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({ 
   appBar: {
     position: 'relative',
   },
@@ -49,12 +49,12 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Informações', 'Foto'];
 
-function getStepContent(step) {
+function getStepContent(step, setCheckout) {
   switch (step) {
     case 0:
       return <UserInfo />;
     case 1:
-      return <UserPhoto />;    
+      return <UserPhoto setCheckout={setCheckout}/>;    
     default:
       throw new Error('Unknown step');
   }
@@ -62,7 +62,8 @@ function getStepContent(step) {
 
 export default function CreateForm() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [checkout, setCheckout] = useState(true)
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -70,6 +71,7 @@ export default function CreateForm() {
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
+    setCheckout(true)
   };
 
   return (
@@ -100,7 +102,7 @@ export default function CreateForm() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, setCheckout)}
                 <div className={classes.buttons}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className={classes.button}>
@@ -112,6 +114,7 @@ export default function CreateForm() {
                     color="primary"
                     onClick={handleNext}
                     className={classes.button}
+                    disabled={activeStep === 1 && checkout}
                   >
                     {activeStep === steps.length - 1 ? 'Cadastrar' : 'Next'}
                   </Button>

@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 
 })
 
-export default function UserPhoto() {
+export default function UserPhoto({ setCheckout }) {
   const classes = useStyles()
   const [loading, setLoading] = React.useState(false);
 
@@ -53,16 +53,19 @@ export default function UserPhoto() {
 
 const handleSubmit = async e => {
     setLoading(true);
-    let imgSrc = webcamRef.current.getScreenshot()
-    let img = getBinary(imgSrc)
-    var params = {
-        CollectionId: "lambda-talks",
-        Image: {
-            Bytes: img
-        },
-        MaxFaces: 1
-    }
+    setCheckout(false)
+    // let imgSrc = webcamRef.current.getScreenshot()
+    // let img = getBinary(imgSrc)
+    // var params = {
+    //     CollectionId: "lambda-talks",
+    //     Image: {
+    //         Bytes: img
+    //     },
+    //     MaxFaces: 1
+    // }
     
+
+
     setLoading(false);
 }
 
