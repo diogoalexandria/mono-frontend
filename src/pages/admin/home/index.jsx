@@ -1,28 +1,22 @@
 import { Container } from '@material-ui/core';
 import React from 'react';
-import Header from '../../../components/header';
 import { makeStyles } from '@material-ui/core/styles';
-import { useAdminContext } from '../../../components/store/admin/context';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-      marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    }    
-  }));
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    }
+}));
 
 export default function AdminHome() {
-    const classes = useStyles();
-    
-    const { entities } = useAdminContext()
+    const classes = useStyles();  
 
-    return(
-        <React.Fragment>            
-            <Header entities={entities} >
-                <Container className={classes.container}>Olá, Admin</Container> 
-            </Header>
+    return (
+        <React.Fragment>
+            <Container className={classes.container}>Olá, Admin</Container>
         </React.Fragment>
     )
 }

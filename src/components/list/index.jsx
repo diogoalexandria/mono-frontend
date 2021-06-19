@@ -16,15 +16,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ListEntity({ entity, columns, create_path, update_path }) {
+export default function ListEntity({ identity, entity, columns, create_path, update_path, details_path }) {
     const classes = useStyles();
     const history = useHistory();
     const [checked, setChecked] = useState([]);
     const [values, setValues] = useState([0, 1, 2, 3])
 
     const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value);        
-        const newChecked = []; 
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [];
 
         if (currentIndex === -1) {
             newChecked.push(value);
@@ -38,7 +38,7 @@ export default function ListEntity({ entity, columns, create_path, update_path }
     const handleNavigate = (path) => {
         history.push(path)
     }
-    
+
     const handleDeletion = (value) => {
         const currentIndex = values.indexOf(value);
         const newValues = [...values]
@@ -48,25 +48,31 @@ export default function ListEntity({ entity, columns, create_path, update_path }
 
     return (
         <React.Fragment>
-            <Button variant="contained" color="primary" onClick={() => handleNavigate(create_path)}>
-                Criar {entity} 
-            </Button>
-            <Button variant="contained" disabled={checked.length === 0} onClick={() => handleNavigate(update_path)}>
-                Atualizar {entity}
+            {identity === "administrator" ?
+                <Button variant="contained" color="primary" onClick={() => handleNavigate(create_path)}>
+                    Criar {entity}
+                </Button> :
+                <div></div>
+            }
+            <Button variant="contained" disabled={checked.length === 0} onClick={() => { identity === "administrator" ? handleNavigate(update_path) : handleNavigate(details_path) }}>
+                {identity === "administrator" ? `Atualizar ${entity}` : `Detalhes ${entity}`}
             </Button>
             <List className={classes.root}>
                 <ListItem dense >
                     <ListItemIcon className={classes.checkbox}>
                     </ListItemIcon>
                     {columns.map((column) => {
-                        return(                            
+                        return (
                             <ListItemText primary={column} />
                         )
-                    })}                    
-                    <ListItemSecondaryAction>
-                        <IconButton edge="end" >
-                        </IconButton>
-                    </ListItemSecondaryAction>
+                    })}
+                    {identity === "administrator" ?
+                        <ListItemSecondaryAction>
+                            <IconButton edge="end" >
+                            </IconButton>
+                        </ListItemSecondaryAction> :
+                        <div></div>
+                    }
                 </ListItem>
                 {values.map((value) => {
                     const labelId = `checkbox-list-label-${value}`;
@@ -79,19 +85,22 @@ export default function ListEntity({ entity, columns, create_path, update_path }
                                     checked={checked.indexOf(value) !== -1}
                                     tabIndex={-1}
                                     disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}                                    
+                                    inputProps={{ 'aria-labelledby': labelId }}
                                 />
                             </ListItemIcon>
                             {columns.map((column) => {
-                                return(                            
+                                return (
                                     <ListItemText id={labelId} primary={`${column} ${value + 1}`} />
                                 )
-                            })}                            
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="delete" onClick={() => {handleDeletion(value)}}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
+                            })}
+                            {identity === "administrator" ?
+                                <ListItemSecondaryAction>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => { handleDeletion(value) }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction> :
+                                <div></div>
+                            }
                         </ListItem>
                     );
                 })}

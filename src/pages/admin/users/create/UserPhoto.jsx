@@ -54,8 +54,9 @@ export default function UserPhoto({ setCheckout }) {
 const handleSubmit = async e => {
     setLoading(true);
     setCheckout(false)
-    // let imgSrc = webcamRef.current.getScreenshot()
-    // let img = getBinary(imgSrc)
+    let imgSrc = webcamRef.current.getScreenshot()
+    let img = getBinary(imgSrc)
+    console.log(img)
     // var params = {
     //     CollectionId: "lambda-talks",
     //     Image: {

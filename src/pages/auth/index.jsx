@@ -120,7 +120,7 @@ export default function SignIn() {
             required
             fullWidth
             id="user"
-            label="Username or Email Address"
+            label="Username ou Email"
             name="user"
             autoComplete="user"
             autoFocus
@@ -133,7 +133,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Senha"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -142,7 +142,8 @@ export default function SignIn() {
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            label="Lembre de mim
+            "
           />
           <Button
             type="submit"
@@ -151,12 +152,12 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Entrar
           </Button>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                Forgot password?
+                Esqueceu a senha?
               </Link>
             </Grid>            
           </Grid>

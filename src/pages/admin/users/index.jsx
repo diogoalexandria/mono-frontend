@@ -5,6 +5,7 @@ export default function Users() {
     return (
         <React.Fragment>            
             <ListEntity
+                identity={"administrator"}            
                 entity={"Usuário"}
                 columns={['ID', 'Nome', 'Função', 'Status']}
                 create_path={"/admin/users/create"}

@@ -5,10 +5,11 @@ export default function Subscriptions() {
     return(        
         <React.Fragment>            
             <ListEntity
+                identity={"administrator"}
                 entity={"Inscrições"}
                 columns={['ID', 'Materia', 'Aluno', 'Período', 'Status']}
-                create_path={"/admin/subscription/create"}
-                update_path={"/admin/subscription/update"}
+                create_path={"/admin/subscriptions/create"}
+                update_path={"/admin/subscriptions/update"}
             />            
         </React.Fragment>
     )

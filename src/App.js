@@ -1,12 +1,14 @@
 import React from 'react';
+import AuthProvider from './components/store/auth/provider';
 import Routes from './routes';
-import './styles/global.css';  
-
+import './styles/global.css';
 
 function App() {
   return (
     <React.Fragment>
-      <Routes/>
+      <AuthProvider>
+        <Routes/>
+      </AuthProvider>
     </React.Fragment>
   );
 }
