@@ -46,12 +46,15 @@ function AdminProvider({children}) {
             path: '/admin/topics'
         }
     ])
+    const [id, setId] = useState("")
 
     return (
         <AdminContext.Provider
             value={{
                 entities,
-                setEntities
+                setEntities,
+                id,
+                setId
             }}
         >
             {children}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -9,8 +9,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import UserInfo from './UserInformation';
 import UserPhoto from './UserPhoto';
+import api from '../../../../utils/api';
+import AuthContext from '../../../../components/store/auth/context';
+import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({ 
+const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
   },
@@ -47,26 +50,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function initialState() {
+  return {
+    "username": "teste",
+    "email": "teste@eduty.com",
+    "password": "1234",
+    "first_name": "teste",
+    "last_name": "teste",
+    "entity": "administrator"
+  }
+}
+
 const steps = ['Informações', 'Foto'];
 
-function getStepContent(step, setCheckout) {
+function getStepContent(step, setCheckout, setPayload, payload) {
   switch (step) {
     case 0:
-      return <UserInfo />;
+      return <UserInfo setPayload={setPayload} payload={payload} />;
     case 1:
-      return <UserPhoto setCheckout={setCheckout}/>;    
+      return <UserPhoto setCheckout={setCheckout} setPayload={setPayload} payload={payload} />;
     default:
       throw new Error('Unknown step');
   }
 }
 
 export default function CreateForm() {
+  const { token } = useContext(AuthContext);  
   const classes = useStyles();
+  const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
-  const [checkout, setCheckout] = useState(true)
+  const [checkout, setCheckout] = useState(true);
+  const [payload, setPayload] = useState(initialState)
 
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
+  const handleNext = async () => {
+    if (activeStep === 0) {
+      setActiveStep(activeStep + 1);
+    } else {
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
+        }
+      }
+
+      await api.post("/api/v1/users", payload, config)
+      history.push("/admin/users")
+    }
   };
 
   const handleBack = () => {
@@ -76,7 +107,7 @@ export default function CreateForm() {
 
   return (
     <React.Fragment>
-      <CssBaseline />      
+      <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
@@ -90,39 +121,25 @@ export default function CreateForm() {
             ))}
           </Stepper>
           <React.Fragment>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
-                </Typography>
-                <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order confirmation, and will
-                  send you an update when your order has shipped.
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep, setCheckout)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Voltar
-                    </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                    disabled={activeStep === 1 && checkout}
-                  >
-                    {activeStep === steps.length - 1 ? 'Cadastrar' : 'Next'}
-                  </Button>
-                </div>
-              </React.Fragment>
-            )}
+            {getStepContent(activeStep, setCheckout, setPayload, payload)}
+            <div className={classes.buttons}>
+              {activeStep !== 0 && (
+                <Button onClick={handleBack} className={classes.button}>
+                  Voltar
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNext}
+                className={classes.button}
+                disabled={activeStep === 1 && checkout}
+              >
+                {activeStep === steps.length - 1 ? 'Cadastrar' : 'Next'}
+              </Button>
+            </div>
           </React.Fragment>
-        </Paper>        
+        </Paper>
       </main>
     </React.Fragment>
   );

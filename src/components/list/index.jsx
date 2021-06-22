@@ -1,8 +1,12 @@
 import { Button, Checkbox, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
+import { useEffect } from 'react';
+import api from '../../utils/api';
+import AuthContext from '../store/auth/context';
+import { useAppContext } from '../store/app/context';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,13 +20,20 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ListEntity({ identity, entity, columns, create_path, update_path, details_path }) {
-    const classes = useStyles();
+export default function ListEntity({ type, identity, entity, columns, create_path, update_path, details_path, list }) {
+    const classes = useStyles();    
     const history = useHistory();
+    const { token } = useContext(AuthContext);
+    const { setId } = useAppContext();
     const [checked, setChecked] = useState([]);
-    const [values, setValues] = useState([0, 1, 2, 3])
+    const [values, setValues] = useState([])
+
+    useEffect(() => {
+        setValues(list)        
+    }, [setValues, list])
 
     const handleToggle = (value) => () => {
+        setId(value[0])        
         const currentIndex = checked.indexOf(value);
         const newChecked = [];
 
@@ -32,18 +43,29 @@ export default function ListEntity({ identity, entity, columns, create_path, upd
             newChecked.splice(currentIndex, 1);
         }
 
-        setChecked(newChecked);
+        setChecked(newChecked);        
     };
 
     const handleNavigate = (path) => {
         history.push(path)
     }
 
-    const handleDeletion = (value) => {
+    const handleDeletion = async (value) => {        
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            }
+        }
+        await api.delete(`/api/v1/users/${value[0]}`, config)
+
         const currentIndex = values.indexOf(value);
+        console.log(currentIndex)
         const newValues = [...values]
         newValues.splice(currentIndex, 1);
-        setValues(newValues)
+        setValues(newValues)       
     }
 
     return (
@@ -54,13 +76,19 @@ export default function ListEntity({ identity, entity, columns, create_path, upd
                 </Button> :
                 <div></div>
             }
-            <Button variant="contained" disabled={checked.length === 0} onClick={() => { identity === "administrator" ? handleNavigate(update_path) : handleNavigate(details_path) }}>
-                {identity === "administrator" ? `Atualizar ${entity}` : `Detalhes ${entity}`}
-            </Button>
+            {type !== "details" ?
+                <Button variant="contained" disabled={checked.length === 0} onClick={() => { identity === "administrator" ? handleNavigate(update_path) : handleNavigate(details_path) }}>
+                    {identity === "administrator" ? `Atualizar ${entity}` : `Detalhes ${entity}`}
+                </Button> :
+                <div></div>
+            }
             <List className={classes.root}>
-                <ListItem dense >
-                    <ListItemIcon className={classes.checkbox}>
-                    </ListItemIcon>
+                <ListItem key={"1"} dense >
+                    {type !== "details" ?
+                        <ListItemIcon className={classes.checkbox}>
+                        </ListItemIcon> :
+                        <div></div>
+                    }
                     {columns.map((column) => {
                         return (
                             <ListItemText primary={column} />
@@ -74,23 +102,26 @@ export default function ListEntity({ identity, entity, columns, create_path, upd
                         <div></div>
                     }
                 </ListItem>
-                {values.map((value) => {
-                    const labelId = `checkbox-list-label-${value}`;
+                {values.map((value, index) => {
+                    const labelId = `checkbox-list-label-${index}`;
 
                     return (
-                        <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
-                            <ListItemIcon className={classes.checkbox}>
-                                <Checkbox
-                                    edge="start"
-                                    checked={checked.indexOf(value) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                />
-                            </ListItemIcon>
-                            {columns.map((column) => {
+                        <ListItem key={labelId} role={undefined} dense button onClick={handleToggle(value)}>
+                            {type !== "details" ?
+                                <ListItemIcon className={classes.checkbox}>
+                                    <Checkbox
+                                        edge="start"
+                                        checked={checked.indexOf(value) !== -1}
+                                        tabIndex={-1}
+                                        disableRipple
+                                        inputProps={{ 'aria-labelledby': labelId }}
+                                    />
+                                </ListItemIcon> :
+                                <div></div>
+                            }
+                            {value.map((column, index) => {
                                 return (
-                                    <ListItemText id={labelId} primary={`${column} ${value + 1}`} />
+                                    <ListItemText key={index} id={value.length > 0 ? column : 1} primary={`${column}`} />
                                 )
                             })}
                             {identity === "administrator" ?

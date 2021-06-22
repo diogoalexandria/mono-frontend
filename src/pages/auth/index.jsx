@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function initialState() {
-    return { user: "", password: "" }
+  return { user: "", password: "" }
 }
 
 async function login({ user, password }) {
