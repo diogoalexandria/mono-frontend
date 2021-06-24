@@ -45,6 +45,7 @@ export default function Users() {
                 columns={['ID', 'Nome', 'Função', 'Status']}
                 create_path={"/admin/users/create"}
                 update_path={"/admin/users/update"}
+                api_path={"/api/v1/users/"}
             />
         </React.Fragment>
     )

@@ -2,13 +2,14 @@ import React, { useContext, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { Button, Paper } from '@material-ui/core';
+import { Button, MenuItem, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import { useEffect } from 'react';
 import { useAppContext } from '../../../components/store/app/context';
 import api from '../../../utils/api';
 import AuthContext from '../../../components/store/auth/context';
 import { useHistory } from 'react-router-dom';
+import Users from '.';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,7 +37,8 @@ export default function UpdateUser() {
     const history = useHistory();
     const { token } = useContext(AuthContext);
     const { id, response } = useAppContext();
-        
+    const [courses, setCourses] = useState([]);
+
     const [user, setUser] = useState({
         first_name: "",
         last_name: "",
@@ -46,31 +48,73 @@ export default function UpdateUser() {
         password: ""
     })
 
+    const entitites = [
+        {
+          value: 'administrator',
+          label: 'Administrador',
+        },
+        {
+          value: 'professor',
+          label: 'Professor',
+        },
+        {
+          value: 'student',
+          label: 'Estudante',
+        }
+      ];
+
     useEffect(() => {
-        const selectedItem = response.filter(item => id === item.id ? item: null)
+        const selectedItem = response.filter(item => id === item.id ? item : null)
         setUser(selectedItem[0])
-    },[setUser, id, response])
+    }, [setUser, id, response])
+
+    useEffect(() => {
+        const config = {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          }
+        }
+        try {
+          const getCourses = async () => await api.get("/api/v1/courses", config)
+    
+          getCourses()
+            .then((response) => {
+              let coursesList = response.data.map((course) => {
+                if (course["status"] === "active") {
+                  return {value: course["id"], label: course["name"]}
+                }
+              })
+    
+              setCourses(coursesList)          
+            })
+    
+        } catch (err) {
+          console.log(err)
+        }
+    
+      }, [token, setCourses])
 
     const handleUpdate = async () => {
         const config = {
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              'accept': 'application/json'
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
             }
-          }
-        console.log(user)
-        await api.patch(`api/v1/users/${id}`, user, config )
+        }
+
+        await api.patch(`api/v1/users/${id}`, user, config)
         history.push("/admin/users")
     };
 
     function onChange(event) {
         const { value, name } = event.target;
         setUser({
-          ...user,
-          [name]: value,
+            ...user,
+            [name]: value,
         })
-      }
+    }
 
     return (
         <React.Fragment>
@@ -83,7 +127,7 @@ export default function UpdateUser() {
                         <React.Fragment>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField                                        
+                                    <TextField
                                         id="firstName"
                                         name="first_name"
                                         label="Nome"
@@ -94,7 +138,7 @@ export default function UpdateUser() {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField                                        
+                                    <TextField
                                         id="lastName"
                                         name="last_name"
                                         label="Sobrenome"
@@ -105,7 +149,7 @@ export default function UpdateUser() {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField                                        
+                                    <TextField
                                         id="username"
                                         name="username"
                                         label="Username"
@@ -116,7 +160,7 @@ export default function UpdateUser() {
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField                                        
+                                    <TextField
                                         id="password"
                                         name="password"
                                         label="Senha"
@@ -128,7 +172,7 @@ export default function UpdateUser() {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField                                        
+                                    <TextField
                                         id="email"
                                         name="email"
                                         label="E-mail"
@@ -140,22 +184,54 @@ export default function UpdateUser() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
+                                        required
                                         id="entity"
+                                        select
                                         name="entity"
                                         label="Função"
                                         fullWidth
                                         autoComplete="entity"
                                         onChange={onChange}
                                         value={user.entity}
-                                    />
+                                        helperText="Selecione o tipo do usuário"
+                                    >
+                                        {entitites.map((option) => (
+                                            <MenuItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
                                 </Grid>
+                                {user.entity === "student" ?
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            id="course"
+                                            select
+                                            name="course"
+                                            label="Curso"
+                                            fullWidth
+                                            autoComplete="course"
+                                            onChange={onChange}
+                                            value={Users.course}
+                                            helperText="Selecione o curso"
+                                        >
+                                            {courses.map((option) => (
+                                                <MenuItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Grid> :
+                                    <div></div>
+                                }
                             </Grid>
                             <div className={classes.buttons}>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     onClick={handleUpdate}
-                                    className={classes.button}                                    
+                                    className={classes.button}
                                 >
                                     Atualizar
                                 </Button>

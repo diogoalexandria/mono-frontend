@@ -1,7 +1,7 @@
 import React from 'react';
 import ListEntity from '../../../components/list';
 
-export default function StudentClassesTopicsPresences() {
+export default function StudentClassesTopicsAttendances() {
     return(
         <React.Fragment>            
            <ListEntity

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -6,10 +6,15 @@ import { Button, InputLabel, Paper, Switch, withStyles } from '@material-ui/core
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core';
 import {
-    MuiPickersUtilsProvider,    
+    MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { useHistory } from 'react-router-dom';
+import AuthContext from '../store/auth/context';
+import api from '../../utils/api';
+import { useEffect } from 'react';
+import { useAppContext } from '../store/app/context';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -67,24 +72,72 @@ const AntSwitch = withStyles((theme) => ({
 }))(Switch);
 
 
-export default function BaseForm({ type, entity, fields, options, is_topic }) {
+export default function BaseForm({ type, entity, fields, options, is_topic, initial_state, api_path, return_path }) {
     const classes = useStyles();
-
+    const history = useHistory();
+    const { token } = useContext(AuthContext);
     const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [payload, setPayload] = useState(initial_state)
+    const [state, setState] = React.useState({ checked: true });
+    const { id, response } = useAppContext();
+
+    useEffect(() => {
+        if (type !== "create") {
+            const selectedItem = response.filter(item => id === item.id ? item : null)
+            setPayload(selectedItem[0])
+            if (selectedItem[0]["status"] !== "active") {
+                setState({ checked: false })
+            }
+        }        
+    }, [type, setPayload, id, response, setState ])
+    
+
+    const handleForm = async () => {
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            }
+        }
+        try {    
+            if (type === "create") {                
+                await api.post(api_path, payload, config)                
+            } else {                               
+                await api.patch(api_path+id, payload, config)
+            }
+            history.push(return_path)
+        } catch(err) {
+            console.log(err)
+        }
+    };
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
 
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-        checkedC: true,
-    });
-
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setState({ ...state, [event.target.name]: event.target.checked });        
+        if(event.target.checked) {
+            setPayload({
+                ...payload,
+                "status": "active"
+            })
+        } else {
+            setPayload({
+                ...payload,
+                "status": "deactivated"
+            })
+        }
     };
+
+    function onChange(event) {
+        const { value, name } = event.target;
+        setPayload({
+            ...payload,
+            [name]: value,
+        })
+    }
 
     return (
         <React.Fragment>
@@ -105,6 +158,8 @@ export default function BaseForm({ type, entity, fields, options, is_topic }) {
                                                 label={object["label"]}
                                                 fullWidth
                                                 autoComplete={object["name"]}
+                                                value={payload[object["name"]]}
+                                                onChange={onChange}
                                             />
                                         </Grid>
                                     )
@@ -117,7 +172,7 @@ export default function BaseForm({ type, entity, fields, options, is_topic }) {
                                             <Grid component="label" container alignItems="center" spacing={1}>
                                                 <Grid item>Desativado</Grid>
                                                 <Grid item>
-                                                    <AntSwitch checked={state.checkedC} onChange={handleChange} name="checkedC" />
+                                                    <AntSwitch checked={state.checked} onChange={handleChange} name="checked" />
                                                 </Grid>
                                                 <Grid item>Ativado</Grid>
                                             </Grid>
@@ -169,6 +224,7 @@ export default function BaseForm({ type, entity, fields, options, is_topic }) {
                                     variant="contained"
                                     color="primary"
                                     className={classes.button}
+                                    onClick={() => { handleForm() }}
                                 >
                                     {type === 'create' ? 'Criar' : 'Atualizar'}
                                 </Button>

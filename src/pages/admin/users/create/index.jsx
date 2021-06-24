@@ -57,7 +57,8 @@ function initialState() {
     "password": "1234",
     "first_name": "teste",
     "last_name": "teste",
-    "entity": "administrator"
+    "entity": "administrator",
+    "course": ""
   }
 }
 
@@ -75,7 +76,7 @@ function getStepContent(step, setCheckout, setPayload, payload) {
 }
 
 export default function CreateForm() {
-  const { token } = useContext(AuthContext);  
+  const { token } = useContext(AuthContext);
   const classes = useStyles();
   const history = useHistory();
   const [activeStep, setActiveStep] = useState(0);
@@ -101,8 +102,12 @@ export default function CreateForm() {
   };
 
   const handleBack = () => {
-    setActiveStep(activeStep - 1);
-    setCheckout(true)
+    if (activeStep === steps.length - 1) {
+      setActiveStep(activeStep - 1);
+      setCheckout(true)
+    } else {
+      history.goBack()
+    }
   };
 
   return (
@@ -123,11 +128,11 @@ export default function CreateForm() {
           <React.Fragment>
             {getStepContent(activeStep, setCheckout, setPayload, payload)}
             <div className={classes.buttons}>
-              {activeStep !== 0 && (
-                <Button onClick={handleBack} className={classes.button}>
-                  Voltar
-                </Button>
-              )}
+
+              <Button onClick={handleBack} className={classes.button}>
+                Voltar
+              </Button>
+
               <Button
                 variant="contained"
                 color="primary"
@@ -135,7 +140,7 @@ export default function CreateForm() {
                 className={classes.button}
                 disabled={activeStep === 1 && checkout}
               >
-                {activeStep === steps.length - 1 ? 'Cadastrar' : 'Next'}
+                {activeStep === steps.length - 1 ? 'Cadastrar' : 'Próximo'}
               </Button>
             </div>
           </React.Fragment>

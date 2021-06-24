@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ListEntity({ type, identity, entity, columns, create_path, update_path, details_path, list }) {
+export default function ListEntity({ type, identity, entity, columns, create_path, update_path, details_path, list, api_path }) {
     const classes = useStyles();    
     const history = useHistory();
     const { token } = useContext(AuthContext);
@@ -59,10 +59,10 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
                 'accept': 'application/json'
             }
         }
-        await api.delete(`/api/v1/users/${value[0]}`, config)
+        await api.delete(`${api_path}${value[0]}`, config)
 
         const currentIndex = values.indexOf(value);
-        console.log(currentIndex)
+        
         const newValues = [...values]
         newValues.splice(currentIndex, 1);
         setValues(newValues)       
