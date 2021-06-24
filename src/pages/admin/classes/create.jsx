@@ -1,7 +1,12 @@
 import React from 'react';
 import BaseForm from '../../../components/baseForm';
 
-export default function CreateClasses() {   
+export default function CreateClasses() {
+    function initialState() {
+        return {
+            "name": "",            
+        }
+    }    
     return (
         <React.Fragment>
             <BaseForm 
@@ -12,6 +17,9 @@ export default function CreateClasses() {
                     {"name": "professor", "label": "Professor"},
                     {"name": "period", "label": "Período"}
                 ]}
+                initial_state={initialState}
+                api_path={"/api/v1/subjects"}
+                return_path={"/admin/subjects"}
             />
         </React.Fragment>
     );

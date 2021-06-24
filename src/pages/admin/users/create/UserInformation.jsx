@@ -18,7 +18,7 @@ export default function UserInformation({ setPayload, payload }) {
     },
     {
       value: 'professor',
-      label: 'Professor',
+      label: 'Professor(a)',
     },
     {
       value: 'student',
@@ -42,6 +42,7 @@ export default function UserInformation({ setPayload, payload }) {
             if (course["status"] === "active") {
               return {value: course["id"], label: course["name"]}
             }
+            return null
           })
 
           setCourses(coursesList)          

@@ -17,15 +17,15 @@ export default function Subjects() {
             }
         }
         try {
-            const getCourses = async () => await api.get("/api/v1/subjects", config)
+            const getSubjects = async () => await api.get("/api/v1/subjects", config)
 
-            getCourses()
+            getSubjects()
                 .then((response) => {
-                    let coursesList = response.data.map((course) => {
-                        return [course["id"], course["name"], course["status"]]
+                    let subjectsList = response.data.map((subject) => {
+                        return [subject["id"], subject["name"], subject["status"]]
                     })
-
-                    setSubjects(coursesList)
+                    
+                    setSubjects(subjectsList)
                     setResponse(response.data)
                 })
 

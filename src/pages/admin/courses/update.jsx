@@ -4,7 +4,8 @@ import BaseForm from '../../../components/baseForm';
 export default function UpdateCourse() { 
     function initialState() {
         return {
-            "name": "",            
+            "name": "",
+            "status": ""            
         }
     }  
 

@@ -1,15 +1,14 @@
-import React, { useContext, useState } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import { Button, MenuItem, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core';
-import { useEffect } from 'react';
-import { useAppContext } from '../../../components/store/app/context';
+import Users from '.';
+import React, { useContext, useState, useEffect } from 'react';
 import api from '../../../utils/api';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import { Button, MenuItem, Paper, Switch, withStyles } from '@material-ui/core';
+import { useAppContext } from '../../../components/store/app/context';
 import AuthContext from '../../../components/store/auth/context';
 import { useHistory } from 'react-router-dom';
-import Users from '.';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -32,12 +31,47 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const AntSwitch = withStyles((theme) => ({
+    root: {
+        width: 28,
+        height: 16,
+        padding: 0,
+        display: 'flex',
+    },
+    switchBase: {
+        padding: 2,
+        color: theme.palette.grey[500],
+        '&$checked': {
+            transform: 'translateX(12px)',
+            color: theme.palette.common.white,
+            '& + $track': {
+                opacity: 1,
+                backgroundColor: theme.palette.primary.main,
+                borderColor: theme.palette.primary.main,
+            },
+        },
+    },
+    thumb: {
+        width: 12,
+        height: 12,
+        boxShadow: 'none',
+    },
+    track: {
+        border: `1px solid ${theme.palette.grey[500]}`,
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor: theme.palette.common.white,
+    },
+    checked: {},
+}))(Switch);
+
 export default function UpdateUser() {
     const classes = useStyles();
     const history = useHistory();
     const { token } = useContext(AuthContext);
     const { id, response } = useAppContext();
     const [courses, setCourses] = useState([]);
+    const [state, setState] = React.useState({ checked: true });
 
     const [user, setUser] = useState({
         first_name: "",
@@ -50,50 +84,55 @@ export default function UpdateUser() {
 
     const entitites = [
         {
-          value: 'administrator',
-          label: 'Administrador',
+            value: 'administrator',
+            label: 'Administrador',
         },
         {
-          value: 'professor',
-          label: 'Professor',
+            value: 'professor',
+            label: 'Professor',
         },
         {
-          value: 'student',
-          label: 'Estudante',
+            value: 'student',
+            label: 'Estudante',
         }
-      ];
+    ];
 
     useEffect(() => {
         const selectedItem = response.filter(item => id === item.id ? item : null)
         setUser(selectedItem[0])
+        if (selectedItem[0]["status"] !== "active") {
+            setState({ checked: false })
+        }
     }, [setUser, id, response])
+   
 
     useEffect(() => {
         const config = {
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          }
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
         }
         try {
-          const getCourses = async () => await api.get("/api/v1/courses", config)
-    
-          getCourses()
-            .then((response) => {
-              let coursesList = response.data.map((course) => {
-                if (course["status"] === "active") {
-                  return {value: course["id"], label: course["name"]}
-                }
-              })
-    
-              setCourses(coursesList)          
-            })
-    
+            const getCourses = async () => await api.get("/api/v1/courses", config)
+
+            getCourses()
+                .then((response) => {
+                    let coursesList = response.data.map((course) => {
+                        if (course["status"] === "active") {
+                            return { value: course["id"], label: course["name"] }
+                        }
+                        return null
+                    })
+
+                    setCourses(coursesList)
+                })
+
         } catch (err) {
-          console.log(err)
+            console.log(err)
         }
-    
-      }, [token, setCourses])
+
+    }, [token, setCourses]);
 
     const handleUpdate = async () => {
         const config = {
@@ -114,7 +153,26 @@ export default function UpdateUser() {
             ...user,
             [name]: value,
         })
-    }
+    };
+
+    const handleBack = () => {
+        history.goBack();
+    };
+
+    const handleChange = (event) => {
+        setState({ ...state, [event.target.name]: event.target.checked });        
+        if(event.target.checked) {
+            setUser({
+                ...user,
+                "status": "active"
+            })
+        } else {
+            setUser({
+                ...user,
+                "status": "deactivated"
+            })
+        }
+    };
 
     return (
         <React.Fragment>
@@ -225,8 +283,22 @@ export default function UpdateUser() {
                                     </Grid> :
                                     <div></div>
                                 }
+                                <Grid item xs={12}>
+                                        <Typography component="div">
+                                            <Grid component="label" container alignItems="center" spacing={1}>
+                                                <Grid item>Desativado</Grid>
+                                                <Grid item>
+                                                    <AntSwitch checked={state.checked} onChange={handleChange} name="checked" />
+                                                </Grid>
+                                                <Grid item>Ativado</Grid>
+                                            </Grid>
+                                        </Typography>
+                                    </Grid>
                             </Grid>
                             <div className={classes.buttons}>
+                                <Button onClick={handleBack} className={classes.button}>
+                                    Voltar
+                                </Button>
                                 <Button
                                     variant="contained"
                                     color="primary"

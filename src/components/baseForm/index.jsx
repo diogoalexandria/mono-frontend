@@ -88,9 +88,9 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
             if (selectedItem[0]["status"] !== "active") {
                 setState({ checked: false })
             }
-        }        
-    }, [type, setPayload, id, response, setState ])
-    
+        }
+    }, [type, setPayload, id, response, setState])
+
 
     const handleForm = async () => {
         const config = {
@@ -100,14 +100,14 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
                 'accept': 'application/json'
             }
         }
-        try {    
-            if (type === "create") {                
-                await api.post(api_path, payload, config)                
-            } else {                               
-                await api.patch(api_path+id, payload, config)
+        try {
+            if (type === "create") {
+                await api.post(api_path, payload, config)
+            } else {
+                await api.patch(api_path + id, payload, config)
             }
             history.push(return_path)
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     };
@@ -117,8 +117,8 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
     };
 
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });        
-        if(event.target.checked) {
+        setState({ ...state, [event.target.name]: event.target.checked });
+        if (event.target.checked) {
             setPayload({
                 ...payload,
                 "status": "active"
@@ -137,7 +137,11 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
             ...payload,
             [name]: value,
         })
-    }
+    };
+
+    const handleBack = () => {
+        history.goBack();
+    };
 
     return (
         <React.Fragment>
@@ -220,6 +224,9 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
                                 }
                             </Grid>
                             <div className={classes.buttons}>
+                                <Button onClick={handleBack} className={classes.button}>
+                                    Voltar
+                                </Button>
                                 <Button
                                     variant="contained"
                                     color="primary"
