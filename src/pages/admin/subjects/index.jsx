@@ -17,7 +17,7 @@ export default function Subjects() {
             }
         }
         try {
-            const getCourses = async () => await api.get("/api/v1/courses", config)
+            const getCourses = async () => await api.get("/api/v1/subjects", config)
 
             getCourses()
                 .then((response) => {
