@@ -62,7 +62,9 @@ export default function UpdateClasses() {
     }, [payload])
 
     useEffect(() => {
+        console.log(response)
         const selectedItem = response.filter(item => id === item.id ? item : null)
+        console.log(selectedItem)
         setPayload(selectedItem[0])
         if (selectedItem[0]["status"] !== "active") {
             setState({ checked: false })
@@ -90,7 +92,7 @@ export default function UpdateClasses() {
             }
         }
         try {
-            await api.patch(`api/v1/classes/${id}`, payload, config)
+            await api.patch(`api/v1/subscriptions/${id}`, payload, config)
 
             history.goBack()
         } catch (err) {
@@ -98,20 +100,27 @@ export default function UpdateClasses() {
         }
     };
 
+    // const handleChange = (event) => {
+    //     setState({ ...state, [event.target.name]: event.target.checked });
+    //     if (event.target.checked) {
+    //         setPayload({
+    //             ...payload,
+    //             "status": "active"
+    //         })
+    //     } else {
+    //         setPayload({
+    //             ...payload,
+    //             "status": "deactivated"
+    //         })
+    //     }
+    // };
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-        if (event.target.checked) {
-            setPayload({
-                ...payload,
-                "status": "active"
-            })
-        } else {
-            setPayload({
-                ...payload,
-                "status": "deactivated"
-            })
-        }
-    };
+        const name = event.target.name;
+        setPayload({
+          ...payload,
+          [name]: event.target.value,
+        });
+      };
 
     useEffect(() => {
         const config = {
@@ -229,8 +238,8 @@ export default function UpdateClasses() {
                                         value={payload.status}
                                         onChange={handleChange}
                                         inputProps={{
-                                            name: 'age',
-                                            id: 'age-native-simple',
+                                            name: 'status',
+                                            id: 'status',
                                         }}
                                     >
                                         <option aria-label="None" value="" />

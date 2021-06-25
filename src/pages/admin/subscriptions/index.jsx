@@ -7,7 +7,7 @@ import api from '../../../utils/api';
 export default function Subscriptions() {
     const { token } = useContext(AuthContext);
     const { setResponse } = useAppContext();
-    const [classes, setClasses] = useState([]);
+    const [subscriptions, setSubscriptions] = useState([]);
 
     useEffect(() => {
         const config = {
@@ -24,7 +24,7 @@ export default function Subscriptions() {
                     console.log(response)
                     let subscriptionsList = response.data.map((subscription) => [subscription["id"], subscription["class_id"], subscription["student_id"], subscription["created_at"], subscription["status"]])
                     
-                    setClasses(subscriptionsList)
+                    setSubscriptions(subscriptionsList)
                     setResponse(response.data)
                 })
 
@@ -32,12 +32,12 @@ export default function Subscriptions() {
             console.log(err)
         }
 
-    }, [token, setClasses, setResponse])
+    }, [token, setSubscriptions, setResponse])
 
     return(        
         <React.Fragment>            
             <ListEntity
-                list={classes}
+                list={subscriptions}
                 identity={"administrator"}
                 entity={"Inscrições"}
                 columns={['ID', 'Turma', 'Aluno', 'Data de inscrição', 'Status']}

@@ -1,7 +1,8 @@
 import React from 'react';
 import BaseForm from '../../../components/baseForm';
 
-export default function CreateTopic() {   
+export default function CreateTopic() {
+       
     return (
         <React.Fragment>
             <BaseForm 
