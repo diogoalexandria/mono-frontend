@@ -17,11 +17,11 @@ export default function Classes() {
             }
         }
         try {
-            const getClasses = async () => await api.get("/api/v1/subjects", config)
+            const getClasses = async () => await api.get("/api/v1/classes", config)
 
             getClasses()
                 .then((response) => {
-                    let classesList = response.data.map((classItem) => [classItem["id"], classItem["name"], classItem["status"]])
+                    let classesList = response.data.map((classItem) => [classItem["id"], classItem["name"], classItem["subject_id"], classItem["professor_id"], classItem["status"]])
                     
                     setClasses(classesList)
                     setResponse(response.data)
@@ -38,10 +38,10 @@ export default function Classes() {
                 list={classes}
                 identity={"administrator"} 
                 entity={"Turma"}
-                columns={['ID', 'Matéria', 'Professor', 'Período', 'Status']}
+                columns={['ID', 'Nome', 'Matéria', 'Professor', 'Status']}
                 create_path={"/admin/classes/create"}
                 update_path={"/admin/classes/update"}
-                api_path={"/api/v1/subjects/"}
+                api_path={"/api/v1/classes/"}
             />                       
         </React.Fragment>
     )

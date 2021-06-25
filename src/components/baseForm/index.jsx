@@ -76,10 +76,10 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
     const classes = useStyles();
     const history = useHistory();
     const { token } = useContext(AuthContext);
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-    const [payload, setPayload] = useState(initial_state)
-    const [state, setState] = React.useState({ checked: true });
     const { id, response } = useAppContext();
+    const [payload, setPayload] = useState(initial_state)
+    const [state, setState] = useState({ checked: true });    
+    const [selectedDate, setSelectedDate] = useState(new Date('2014-08-18T21:11:54'));
 
     useEffect(() => {
         if (type !== "create") {
@@ -88,9 +88,9 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
             if (selectedItem[0]["status"] !== "active") {
                 setState({ checked: false })
             }
-        }
+        }       
+        
     }, [type, setPayload, id, response, setState])
-
 
     const handleForm = async () => {
         const config = {
@@ -167,9 +167,7 @@ export default function BaseForm({ type, entity, fields, options, is_topic, init
                                             />
                                         </Grid>
                                     )
-                                })
-
-                                }
+                                })}
                                 {type === 'update-switch' ?
                                     <Grid item xs={12}>
                                         <Typography component="div">
