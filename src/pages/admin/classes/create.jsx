@@ -128,8 +128,7 @@ export default function CreateClasses() {
                             return { value: professor["id"], label: `${professor["first_name"]} ${professor["last_name"]}` }
                         }
                         return null
-                    })
-                    console.log(professorsList)
+                    })                    
                     setProfessors(professorsList)
                 })
 
