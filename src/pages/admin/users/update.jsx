@@ -100,7 +100,7 @@ export default function UpdateUser() {
     useEffect(() => {
         const selectedItem = response.filter(item => id === item.id ? item : null)
         setUser(selectedItem[0])
-        if (selectedItem[0]["status"] !== "active") {
+        if (selectedItem.length > 0 && selectedItem[0]["status"] !== "active") {
             setState({ checked: false })
         }
     }, [setUser, id, response])
@@ -275,9 +275,11 @@ export default function UpdateUser() {
                                             helperText="Selecione o curso"
                                         >
                                             {courses.map((option) => (
+                                                option?
                                                 <MenuItem key={option.value} value={option.value}>
                                                     {option.label}
-                                                </MenuItem>
+                                                </MenuItem>:
+                                                <div></div>
                                             ))}
                                         </TextField>
                                     </Grid> :

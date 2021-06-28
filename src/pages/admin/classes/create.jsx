@@ -52,11 +52,7 @@ export default function CreateClasses() {
             value: '',
             label: ''
         }
-    ]);
-
-    useEffect(() => {
-        console.log(payload)
-    }, [payload])
+    ]);   
 
     function onChange(event) {        
         const { value, name } = event.target;

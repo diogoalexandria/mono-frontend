@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useState } from 'react';
 import ListEntity from '../../../components/list';
 import { useAppContext } from '../../../components/store/app/context';
 import AuthContext from '../../../components/store/auth/context';
 import api from '../../../utils/api';
 
-export default function ProfessorClassesDetails() {
-    
+export default function ProfessorTopicsDetailsPresences() {
     const { token } = useContext(AuthContext);
     const { id } = useAppContext();
     
-    const [users, setUsers] = useState([]);   
+    const [attendances, setAttendances] = useState([]);   
 
     useEffect(() => {        
         const config = {
@@ -19,29 +19,28 @@ export default function ProfessorClassesDetails() {
             }
         }        
         try{
-            const getUsers = async () => await api.get(`/api/v1/subscriptions_users/${id}`, config)                
+            const getAttendances = async () => await api.get(`/api/v1/attendances`, config)                
             
-            getUsers()
-                .then((response) => {
-                                        
-                    let usersList = response.data.map((user) => {                        
-                        return [user["id"], `${user["first_name"]} ${user["last_name"]}`, "100%"]
+            getAttendances()
+                .then((response) => {                                       
+                    let attendancesList = response.data.map((attendance) => {                        
+                        return [attendance["id"], `${attendance["first_name"]} ${attendance["last_name"]}`]
                     })                    
-                    setUsers(usersList)    
+                    setAttendances(attendancesList)    
                 })            
             
         }catch(err) {
             console.log(err)
         }
 
-    }, [token, setUsers, id])
+    }, [token, setAttendances, id])
 
     return(
         <React.Fragment>            
            <ListEntity
-                list={users}
+                list={attendances}
                 type="details"              
-                columns={['ID', 'Aluno', 'Frequência']}
+                columns={['ID', 'Aluno']}
                 details_path={"/professor/classes/details"}                
             />                       
         </React.Fragment>

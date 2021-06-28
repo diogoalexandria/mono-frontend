@@ -20,8 +20,7 @@ export default function Subscriptions() {
             const getSubscriptions = async () => await api.get("/api/v1/subscriptions", config)
 
             getSubscriptions()
-                .then((response) => {
-                    console.log(response)
+                .then((response) => {                    
                     let subscriptionsList = response.data.map((subscription) => [subscription["id"], subscription["class_id"], subscription["student_id"], subscription["created_at"], subscription["status"]])
                     
                     setSubscriptions(subscriptionsList)

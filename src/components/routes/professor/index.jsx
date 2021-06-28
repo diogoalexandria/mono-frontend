@@ -8,7 +8,7 @@ import ProfessorClassesDetails from '../../../pages/professor/classes/details';
 import ProfessorTopics from '../../../pages/professor/topics';
 import ProfessorTopicsDetails from '../../../pages/professor/topics/details';
 import ProfessorTopicsDetailsPhoto from '../../../pages/professor/topics/photo';
-import ProfessorTopicsDetailsPresences from '../../../pages/professor/topics/presences';
+import ProfessorTopicsDetailsAttendances from '../../../pages/professor/topics/attendances';
 
 
 export default function ProfessorRoutes() {
@@ -22,7 +22,7 @@ export default function ProfessorRoutes() {
                 <PrivateRoute exact path="/professor/topics" routeEntity="professor" component={ProfessorTopics}/>
                 <PrivateRoute exact path="/professor/topics/details" routeEntity="professor" component={ProfessorTopicsDetails}/>
                 <PrivateRoute exact path="/professor/topics/details/photo" routeEntity="professor" component={ProfessorTopicsDetailsPhoto}/>
-                <PrivateRoute exact path="/professor/topics/details/presences" routeEntity="professor" component={ProfessorTopicsDetailsPresences}/>
+                <PrivateRoute exact path="/professor/topics/details/attendances" routeEntity="professor" component={ProfessorTopicsDetailsAttendances}/>
                 {/* <PrivateRoute path="*">
                     <Redirect to="/"/>
                 </PrivateRoute> */}

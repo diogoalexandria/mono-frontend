@@ -43,7 +43,7 @@ export default function UpdateClasses() {
     const { id, response } = useAppContext();
     const history = useHistory();
     const [payload, setPayload] = useState(initial_state)
-    const [state, setState] = React.useState({ checked: true });
+    const [setState] = React.useState({ checked: true });
     const [subjects, setSubjects] = useState([
         {
             value: '',
@@ -56,15 +56,10 @@ export default function UpdateClasses() {
             label: ''
         }
     ]);
-
-    useEffect(() => {
-        console.log(payload)
-    }, [payload])
-
-    useEffect(() => {
-        console.log(response)
+    
+    useEffect(() => {       
         const selectedItem = response.filter(item => id === item.id ? item : null)
-        console.log(selectedItem)
+        
         setPayload(selectedItem[0])
         if (selectedItem[0]["status"] !== "active") {
             setState({ checked: false })

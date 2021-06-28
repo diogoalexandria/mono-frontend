@@ -17,11 +17,19 @@ const useStyles = makeStyles((theme) => ({
     checkbox: {
         Width: '5%',
 
-    }
+    },
+    buttons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
 }));
 
 export default function ListEntity({ type, identity, entity, columns, create_path, update_path, details_path, list, api_path }) {
-    const classes = useStyles();    
+    const classes = useStyles();
     const history = useHistory();
     const { token } = useContext(AuthContext);
     const { setId } = useAppContext();
@@ -29,11 +37,11 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
     const [values, setValues] = useState([])
 
     useEffect(() => {
-        setValues(list)        
+        setValues(list)
     }, [setValues, list])
 
     const handleToggle = (value) => () => {
-        setId(value[0])        
+        setId(value[0])
         const currentIndex = checked.indexOf(value);
         const newChecked = [];
 
@@ -43,14 +51,14 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
             newChecked.splice(currentIndex, 1);
         }
 
-        setChecked(newChecked);        
+        setChecked(newChecked);
     };
 
     const handleNavigate = (path) => {
         history.push(path)
     }
 
-    const handleDeletion = async (value) => {        
+    const handleDeletion = async (value) => {
 
         const config = {
             headers: {
@@ -62,11 +70,15 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
         await api.delete(`${api_path}${value[0]}`, config)
 
         const currentIndex = values.indexOf(value);
-        
+
         const newValues = [...values]
         newValues.splice(currentIndex, 1);
-        setValues(newValues)       
+        setValues(newValues)
     }
+
+    const handleBack = () => {
+        history.goBack();
+    };
 
     return (
         <React.Fragment>
@@ -136,6 +148,14 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
                     );
                 })}
             </List>
+            {type === "details" ?
+                <div className={classes.buttons}>
+                    <Button onClick={handleBack} className={classes.button}>
+                        Voltar
+                    </Button>
+                </div> :
+                <div></div>
+            }
         </React.Fragment>
     )
 }

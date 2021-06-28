@@ -90,11 +90,7 @@ export default function UpdateClasses() {
             value: '',
             label: ''
         }
-    ]);
-
-    useEffect(() => {
-        console.log(payload)
-    }, [payload])
+    ]);  
 
     useEffect(() => {
         const selectedItem = response.filter(item => id === item.id ? item : null)
@@ -193,8 +189,7 @@ export default function UpdateClasses() {
                             return { value: professor["id"], label: `${professor["first_name"]} ${professor["last_name"]}` }
                         }
                         return null
-                    })
-                    console.log(professorsList)
+                    })                   
                     setProfessors(professorsList)
                 })
 

@@ -20,9 +20,8 @@ export default function Topics() {
             const getSubscriptions = async () => await api.get("/api/v1/topics", config)
 
             getSubscriptions()
-                .then((response) => {
-                    console.log(response)
-                    let topicsList = response.data.map((topic) => [topic["id"], topic["class_id"], topic["student_id"], topic["created_at"], topic["status"]])
+                .then((response) => {                    
+                    let topicsList = response.data.map((topic) => [topic["id"], topic["class_id"], topic["topic_date"], topic["status"]])
                     
                     setTopics(topicsList)
                     setResponse(response.data)

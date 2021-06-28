@@ -164,9 +164,11 @@ export default function UserInformation({ setPayload, payload }) {
               helperText="Selecione o curso"
             >
               {courses.map((option) => (
+                option?
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
-                </MenuItem>
+                </MenuItem>:
+                <div></div>
               ))}
             </TextField>
           </Grid>:
