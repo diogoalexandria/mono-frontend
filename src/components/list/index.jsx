@@ -28,11 +28,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ListEntity({ type, identity, entity, columns, create_path, update_path, details_path, list, api_path }) {
+export default function ListEntity({
+    type,
+    identity,
+    entity,
+    columns,
+    create_path,
+    update_path,
+    details_path,
+    list,
+    api_path,
+    use_id_details
+}) {
     const classes = useStyles();
     const history = useHistory();
     const { token } = useContext(AuthContext);
-    const { setId } = useAppContext();
+    const { setId, setIdDetails } = useAppContext();
     const [checked, setChecked] = useState([]);
     const [values, setValues] = useState([])
 
@@ -40,8 +51,12 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
         setValues(list)
     }, [setValues, list])
 
-    const handleToggle = (value) => () => {
-        setId(value[0])
+    const handleToggle = (value) => () => {        
+        if (use_id_details) {
+            setIdDetails(value[0])
+        } else {
+            setId(value[0])
+        }
         const currentIndex = checked.indexOf(value);
         const newChecked = [];
 
@@ -148,14 +163,12 @@ export default function ListEntity({ type, identity, entity, columns, create_pat
                     );
                 })}
             </List>
-            {type === "details" ?
-                <div className={classes.buttons}>
-                    <Button onClick={handleBack} className={classes.button}>
-                        Voltar
-                    </Button>
-                </div> :
-                <div></div>
-            }
+
+            <div className={classes.buttons}>
+                <Button onClick={handleBack} className={classes.button}>
+                    Voltar
+                </Button>
+            </div>
         </React.Fragment>
     )
 }

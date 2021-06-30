@@ -9,10 +9,12 @@ export function useAppContext() {
         response,
         setResponse,
         id,
-        setId        
+        setId,
+        idDetails,
+        setIdDetails        
     } = context;
 
-    return { response, setResponse, id, setId }
+    return { response, setResponse, id, setId, idDetails, setIdDetails }
 }
 
 export default AppContext

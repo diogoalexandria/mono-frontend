@@ -1,8 +1,7 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import React from 'react';
 import Webcam from 'react-webcam';
-
+import Typography from '@material-ui/core/Typography';
 import { CircularProgress, createMuiTheme, Fade, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import { PhotoCamera } from '@material-ui/icons';
@@ -23,59 +22,50 @@ const useStyles = makeStyles({
         height: '4vh'
     },
     webcam: {
-        position: 'static',        
+        position: 'static',
         height: '50vh',
         marginBottom: '2vh'
     }
 
 })
 
-export default function UserPhoto({ setCheckout }) {
-  const classes = useStyles()
-  const [loading, setLoading] = React.useState(false);
+export default function UserPhoto({ setCheckout, setRekognitionPayload, rekognitionPayload }) {
+    const classes = useStyles()
+    const [loading, setLoading] = React.useState(false);
 
     const videoConstraints = {
         facingMode: 'user'
     }
 
-  const webcamRef = React.useRef(null)
-  
-  const getBinary = (b64img) => {
-    let binaryImg = atob(b64img.split(',')[1]);
-    let length = binaryImg.length
-    let ab = new ArrayBuffer(length);
-    let ua = new Uint8Array(ab)
-    for (let i = 0; i < length; i++) {
-        ua[i] = binaryImg.charCodeAt(i);
-    }
-    return ab
-}
+    const webcamRef = React.useRef(null)
 
-const handleSubmit = async e => {
-    setLoading(true);
-    setCheckout(false)
-    let imgSrc = webcamRef.current.getScreenshot()
-    let img = getBinary(imgSrc)
-    console.log(img)
-    // var params = {
-    //     CollectionId: "lambda-talks",
-    //     Image: {
-    //         Bytes: img
-    //     },
-    //     MaxFaces: 1
+    // const getBinary = (b64img) => {
+    //     let binaryImg = atob(b64img.split(',')[1]);
+    //     let length = binaryImg.length
+    //     let ab = new ArrayBuffer(length);
+    //     let ua = new Uint8Array(ab)
+    //     for (let i = 0; i < length; i++) {
+    //         ua[i] = binaryImg.charCodeAt(i);
+    //     }
+    //     return ab
     // }
-    
 
+    const handleSubmit = async e => {
+        setLoading(true);
+        setCheckout(false)
+        let imgSrc = webcamRef.current.getScreenshot()
+        // let img = getBinary(imgSrc)   
+        setRekognitionPayload({ ...rekognitionPayload, "b64img": imgSrc })
 
-    setLoading(false);
-}
+        setLoading(false);
+    }
 
-  return (
-    <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Registrar Foto
-      </Typography>
-      <Grid container
+    return (
+        <React.Fragment>
+            <Typography variant="h6" gutterBottom>
+                Registrar Foto
+            </Typography>
+            <Grid container
                 direction="column"
                 justify="center"
                 alignItems="center"
@@ -107,10 +97,10 @@ const handleSubmit = async e => {
                     </Fade>
                 </Grid>
                 <Grid item>
-                    
+
                     {/* <Typography hidden={loading}>{message}</Typography> */}
                 </Grid>
             </Grid>
-    </React.Fragment>
-  );
+        </React.Fragment>
+    );
 }

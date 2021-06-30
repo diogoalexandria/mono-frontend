@@ -1,16 +1,17 @@
-import React, { useContext, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
-import Stepper from '@material-ui/core/Stepper';
+import api from '../../../../utils/api';
 import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
+import axios from 'axios';
+import Paper from '@material-ui/core/Paper';
+import React, { useContext, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Stepper from '@material-ui/core/Stepper';
 import UserInfo from './UserInformation';
 import UserPhoto from './UserPhoto';
-import api from '../../../../utils/api';
+import StepLabel from '@material-ui/core/StepLabel';
+import Typography from '@material-ui/core/Typography';
 import AuthContext from '../../../../components/store/auth/context';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -64,12 +65,12 @@ function initialState() {
 
 const steps = ['Informações', 'Foto'];
 
-function getStepContent(step, setCheckout, setPayload, payload) {
+function getStepContent(step, setCheckout, setPayload, payload, setRekognitionPayload, rekognitionPayload) {
   switch (step) {
     case 0:
       return <UserInfo setPayload={setPayload} payload={payload} />;
     case 1:
-      return <UserPhoto setCheckout={setCheckout} setPayload={setPayload} payload={payload} />;
+      return <UserPhoto setCheckout={setCheckout} setRekognitionPayload={setRekognitionPayload} rekognitionPayload={rekognitionPayload} />;
     default:
       throw new Error('Unknown step');
   }
@@ -82,6 +83,10 @@ export default function CreateForm() {
   const [activeStep, setActiveStep] = useState(0);
   const [checkout, setCheckout] = useState(true);
   const [payload, setPayload] = useState(initialState)
+  const [rekognitionPayload, setRekognitionPayload] = useState({
+    "b64img": "",
+    "id": ""
+  })  
 
   const handleNext = async () => {
     if (activeStep === 0) {
@@ -96,7 +101,16 @@ export default function CreateForm() {
         }
       }
 
-      await api.post("/api/v1/users", payload, config)
+      const response_api = await api.post("/api/v1/users", payload, config)      
+
+      await axios.post(
+        "https://i2grjcygzc.execute-api.us-east-1.amazonaws.com/mono/register",
+        {
+          "b64img": rekognitionPayload["b64img"],
+          "id": response_api.data.id
+        }
+      )      
+      
       history.push("/admin/users")
     }
   };
@@ -126,7 +140,7 @@ export default function CreateForm() {
             ))}
           </Stepper>
           <React.Fragment>
-            {getStepContent(activeStep, setCheckout, setPayload, payload)}
+            {getStepContent(activeStep, setCheckout, setPayload, payload, setRekognitionPayload, rekognitionPayload)}
             <div className={classes.buttons}>
 
               <Button onClick={handleBack} className={classes.button}>

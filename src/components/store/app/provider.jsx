@@ -4,7 +4,8 @@ import { useState } from "react";
 
 const AppProvider = ({ children }) => {    
     const [response, setResponse] = useState([])
-    const [id, setId] = useState("")    
+    const [id, setId] = useState("")
+    const [idDetails, setIdDetails] = useState("")    
 
     return(
        <Context.Provider
@@ -13,7 +14,9 @@ const AppProvider = ({ children }) => {
                 response,
                 setResponse,
                 id,
-                setId   
+                setId,
+                idDetails,
+                setIdDetails   
             }
         }
        >

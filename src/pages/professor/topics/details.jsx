@@ -74,14 +74,14 @@ export default function ProfessorTopicsDetails({ type, identity, entity, create_
         history.push(path)
     }
 
-    const handleAttendance = async () => {
-        console.log(token)
+    const handleAttendance = async () => {        
         const config = {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         }
+        
         await api.post(`/api/v1/attendances`, payload, config)  
         handleNavigate("/professor/topics/details/attendances")
     }

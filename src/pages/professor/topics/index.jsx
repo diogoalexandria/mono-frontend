@@ -21,9 +21,9 @@ export default function ProfessorTopics() {
 
             getTopics()
                 .then((response) => {                   
-                    let classesList = response.data.map((topic) => [topic["id"], topic["name"], topic["subject_id"], topic["topic_date"], topic["status"]])
+                    let topicsList = response.data.map((topic) => [topic["id"], topic["name"], topic["subject_id"], topic["topic_date"], topic["status"]])
                     
-                    setTopics(classesList)
+                    setTopics(topicsList)
                     setResponse(response.data)
                 })
 

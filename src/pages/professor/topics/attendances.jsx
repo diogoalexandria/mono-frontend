@@ -18,13 +18,13 @@ export default function ProfessorTopicsDetailsPresences() {
                 'Content-Type': 'application/json'
             }
         }        
-        try{
-            const getAttendances = async () => await api.get(`/api/v1/attendances`, config)                
+        try{            
+            const getAttendances = async () => await api.get(`/api/v1/attendances_topic/${id}`, config)                
             
             getAttendances()
-                .then((response) => {                                       
+                .then((response) => {                                                           
                     let attendancesList = response.data.map((attendance) => {                        
-                        return [attendance["id"], `${attendance["first_name"]} ${attendance["last_name"]}`]
+                        return [attendance["student_id"], `${attendance["first_name"]} ${attendance["last_name"]}`]
                     })                    
                     setAttendances(attendancesList)    
                 })            
